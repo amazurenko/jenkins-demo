@@ -1,0 +1,70 @@
+version: '3'
+services:
+
+  docker-in-docker:
+    image: docker:dind
+    privileged: true
+    expose:
+      - 2375
+
+  jenkins:
+    build:
+      context: .
+      dockerfile: ./jenkins/jenkins.Dockerfile
+      args:
+        JENKINS_IMAGE: $JENKINS_IMAGE
+    container_name: jenkins
+    restart: always
+    environment:
+      DOCKER_HOST: tcp://docker-in-docker:2375
+    expose:
+      - "8080"
+    ports:
+      - "127.0.0.1:50000:50000"
+      - 8080:8080
+      # JMX/RMI Ports
+#      - "0.0.0.0:12345:12345"
+#      - "0.0.0.0:12346:12346"
+    volumes:
+      - jenkins-master:/jenkins/master
+
+      # for managing Docker daemon inside Docker
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    environment:
+#      - HOME=${PWD}/jenkins/master
+#      - JENKINS_HOME=${PWD}/jenkins/master
+      - JAVA_OPTS=
+          -Djenkins.install.runSetupWizard=false
+          -Djava.awt.headless=true
+          -Dhudson.plugins.git.GitSCM.verbose=true
+          -XX:+DisableExplicitGC
+          -Xms1000m
+          -Xmx3000m
+          -Dorg.apache.commons.jelly.tags.fmt.timeZone=Europe/London
+          -Duser.timezone=Europe/London
+          -Dhttps.protocols=TLSv1.2
+          -Dorg.eclipse.jetty.server.Request.maxFormContentSize=5000000
+          -Dhudson.plugins.parameterizedtrigger.ProjectSpecificParametersActionFactory.compatibility_mode=true
+          -Dpermissive-script-security.enabled=true
+          -XX:MaxMetaspaceSize=1g
+          -XX:+CMSClassUnloadingEnabled
+          -XX:+UseConcMarkSweepGC
+#          -Dhttps.protocols=TLSv1.2
+#          -Djava.rmi.server.hostname=jenkins
+#          -Dcom.sun.management.jmxremote.local.only=false
+#          -Dcom.sun.management.jmxremote.port=12345
+#          -Dcom.sun.management.jmxremote.rmi.port=12346
+#          -Dcom.sun.management.jmxremote.authenticate=false
+#          -Dcom.sun.management.jmxremote.ssl=false
+    logging:
+      driver: json-file #syslog #journald
+      options:
+        tag: jenkins
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+
+volumes:
+  jenkins-master:

@@ -1,0 +1,40 @@
+version: '3'
+services:
+
+  sonar:
+    depends_on: ['sonardb']
+    environment: 
+      - SONARQUBE_JDBC_USERNAME=${SONARQUBE_JDBC_USERNAME}
+      - SONARQUBE_JDBC_PASSWORD=${SONARQUBE_JDBC_PASSWORD}
+      - SONARQUBE_JDBC_URL=${SONARQUBE_JDBC_URL}
+    image: ${SONARQUBE_DOCKER_IMAGE}
+    logging: {'driver': 'json-file', 'options': {'tag': 'docker-sonar'}}
+    ports: ['9000:9000']
+    restart: always
+    volumes: 
+      - sonarqube-conf:/opt/sonarqube/conf
+      - sonarqube-data:/opt/sonarqube/data
+      - sonarqube-extensions:/opt/sonarqube/extensions
+      - sonarqube-bundled-plugins:/opt/sonarqube/lib/bundled-plugins
+      - sonarqube-logs:/opt/sonarqube/logs 
+
+  sonardb:
+    environment: 
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${SONARQUBE_JDBC_USERNAME}
+      - MYSQL_PASSWORD=${SONARQUBE_JDBC_PASSWORD}
+    image: ${MYSQL_DOCKER_IMAGE}
+    logging: {'driver': 'json-file', 'options': {'tag': 'docker-sonardb'}}
+    ports: ['3306:3306']
+    restart: always
+    volumes: 
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  sonarqube-conf:
+  sonarqube-data:
+  sonarqube-extensions:
+  sonarqube-bundled-plugins:
+  sonarqube-logs:
+  mysql-data: 
