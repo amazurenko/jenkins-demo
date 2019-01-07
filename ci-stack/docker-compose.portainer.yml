@@ -1,0 +1,17 @@
+version: '3'
+services:
+  portainer:
+    restart: always
+    image: "portainer/portainer"
+    ports:
+      - 9001:9000
+    volumes:
+      - portainer-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    logging:
+      driver: json-file #syslog
+      options:
+        tag: portainer
+
+volumes:
+  portainer-data:
