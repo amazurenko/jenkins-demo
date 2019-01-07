@@ -1,0 +1,32 @@
+version: '3'
+services:
+  nexus:
+    restart: always
+    image: ${NEXUS_DOCKER_IMAGE} 
+    expose:
+      - "8081"
+      - "8085"
+      - "6566"
+      - "6565"
+    ports:
+      - 0.0.0.0:8081:8081      
+      - "0.0.0.0:6566:6566"
+    volumes:
+      - nexus-data:/nexus-data
+    environment:
+      - JAVA_MAX_HEAP=3000m
+      - JAVA_MIN_HEAP=1200m
+
+    logging:
+      driver: json-file
+      options:
+        tag: nexus
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+
+volumes:
+  nexus-data:
+        
