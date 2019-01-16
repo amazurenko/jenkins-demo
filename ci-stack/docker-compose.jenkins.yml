@@ -15,8 +15,6 @@ services:
         JENKINS_IMAGE: $JENKINS_IMAGE
     container_name: jenkins
     restart: always
-    environment:
-      DOCKER_HOST: tcp://docker-in-docker:2375
     expose:
       - "8080"
     ports:
@@ -31,8 +29,10 @@ services:
       # for managing Docker daemon inside Docker
       - /var/run/docker.sock:/var/run/docker.sock:rw
     environment:
+      - DOCKER_HOST=tcp://docker-in-docker:2375
 #      - HOME=${PWD}/jenkins/master
 #      - JENKINS_HOME=${PWD}/jenkins/master
+      - JENKINS_OPTS=$JENKINS_OPTS
       - JAVA_OPTS=
           -Djenkins.install.runSetupWizard=false
           -Djava.awt.headless=true
