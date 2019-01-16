@@ -43,18 +43,18 @@ Vagrant.configure("2") do |config|
             node.vm.provision "shell",
                 name: "Master/Worker Installation (vagrant/scripts/ci-stack-#{(index == 0) ? 'master' : 'slave'}.sh)",
                 path: "vagrant/scripts/ci-stack-#{(index == 0) ? 'master' : 'slave'}.sh"
-#
-#            if $worker_count == 0
-#                node.vm.provision "shell",
-#                    name: "Master configuration (vagrant/scripts/ci-stack-master.sh)",
-#                    path: "vagrant/scripts/ci-stack-master.sh"
-#            end
-
-#            if index == $worker_count
-#                node.vm.provision "shell", 
-#                    name: "Slave configuration (vagrant/scripts/ci-stack-slave.sh)",
-#                    path: "vagrant/scripts/ci-stack-slave.sh"
-#            end
+           #
+           # if $worker_count == 0
+           #     node.vm.provision "shell",
+           #         name: "Master configuration (vagrant/scripts/ci-stack-master.sh)",
+           #         path: "vagrant/scripts/ci-stack-master.sh"
+           # end
+           #
+           # if index == $worker_count
+           #     node.vm.provision "shell",
+           #         name: "Slave configuration (vagrant/scripts/ci-stack-slave.sh)",
+           #         path: "vagrant/scripts/ci-stack-slave.sh"
+           # end
         end
     end
 end
