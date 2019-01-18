@@ -1,6 +1,6 @@
 .PHONY: help
 
-# Including .env file and exporting variables
+# Including .env file 
 include .env
 
 # Setting up vars
@@ -17,6 +17,8 @@ help:
 	@echo 'Usage:'
 	@echo '  make <target> [service]'
 	@echo 
+	@echo 'Managed services: ' $(IN_SERVICE) '(defined in .env file)'
+	@echo
 	@echo 'Targets:'
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(firstword $(MAKEFILE_LIST)) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-30s\033[0m %s\n", $$1, $$2}'
 	@echo
@@ -36,12 +38,13 @@ stop:	## Stop services: docker-compose -f <config_file> stop [service]
 restart: ## Restart services: docker-compose -f <config_file> restart [service]
 	@$(DC) $(CONFIG_FILES) restart $(SERVICE_LIST)
 
-string:	## Generate 'docker-compose' command with config list without action
-	@echo $(DC) $(CONFIG_FILES)
-
-debug: ## Just debug
-	@echo 'CONFIG_FILES = ' $(CONFIG_FILES) 
-	@echo 'SERVICE_LIST = ' $(SERVICE_LIST)
+showinsrv: ## Shows services which are under control of docker-compose
 	@echo 'IN_SERVICE  = ' $(IN_SERVICE)
-	@echo 'TEST  = ' $(TEST)
-	@echo 'ARGS = ' $(args)
+	@echo 'COMPOSED CONFIGS = ' $(DC) $(CONFIG_FILES)
+
+config:	## Generate common docker-compose.yml  file
+	@echo '=================================================================================================='
+	@$(DC) $(CONFIG_FILES) config > docker-compose.yml
+	@echo 'docker-compose.yml file for services '' $(IN_SERVICE) ''has been generated'
+	@echo '=================================================================================================='
+	@ls -la docker-compose.yml
