@@ -10,7 +10,7 @@ services:
   jenkins:
     build:
       context: .
-      dockerfile: ./jenkins/jenkins.Dockerfile
+      dockerfile: ./configs/jenkins/jenkins.Dockerfile
       args:
         JENKINS_IMAGE: $JENKINS_IMAGE
     container_name: jenkins

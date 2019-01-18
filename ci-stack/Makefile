@@ -2,8 +2,6 @@
 
 # Including .env file and exporting variables
 include .env
-#VARS:=$(shell sed -ne 's/ *\#.*$$//; /./ s/=.*$$// p' .env )
-#$(foreach v,$(VARS),$(eval $(shell echo export $(v)="$($(v))")))
 
 # Setting up vars
 DC = docker-compose
@@ -11,9 +9,8 @@ CONFIG_FILES =  $(foreach var, $(shell echo $(IN_SERVICE) | sed -e 's/ /\n/g'),-
 
 # Parsing arguments 
 ifeq ($(firstword $(MAKECMDGOALS)),$(filter $(MAKECMDGOALS),ps debug up start stop restart))
-  #SERVICE_LIST := $(word 2, $(MAKECMDGOALS))
-  SERVICE_LIST := $(filter-out $(firstword $(MAKECMDGOALS)),$(MAKECMDGOALS))
-  $(eval $(SERVICE_LIST):;@true)
+  SERVICE_LIST := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(SERVICE_LIST):;@:)
 endif
 
 help:
@@ -47,3 +44,4 @@ debug: ## Just debug
 	@echo 'SERVICE_LIST = ' $(SERVICE_LIST)
 	@echo 'IN_SERVICE  = ' $(IN_SERVICE)
 	@echo 'TEST  = ' $(TEST)
+	@echo 'ARGS = ' $(args)

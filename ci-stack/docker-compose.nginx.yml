@@ -12,7 +12,7 @@ services:
 #      - sonar
       - jenkins
     volumes:
-      - "./nginx/nginx.conf:/etc/nginx/conf.d/default.conf"
+      - "./configs/nginx/nginx.conf:/etc/nginx/conf.d/default.conf"
 #      - "./nginx/ssl:/etc/nginx/ssl"
 
         

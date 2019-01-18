@@ -13,7 +13,7 @@ isp.installers.add(autoInstaller)
 def proplist = new DescribableList<ToolProperty<?>, ToolPropertyDescriptor>()
 proplist.add(isp)
 
-def installation = new MavenInstallation("mavenTool", "", proplist)
+def installation = new MavenInstallation("M3", "", proplist)
 
 mavenDesc.setInstallations(installation)
 mavenDesc.save()
