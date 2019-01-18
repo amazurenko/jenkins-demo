@@ -5,7 +5,7 @@ include .env
 
 # Setting up vars
 DC = docker-compose
-CONFIG_FILES =  $(foreach var, $(shell echo $(IN_SERVICE) | sed -e 's/ /\n/g'),-f $(wildcard  *.$(var).yml))
+CONFIG_FILES =  $(foreach var, $(shell echo $(IN_SERVICE) | sed -e 's/[ \t]+/\n/g'),-f $(wildcard  *.$(var).yml))
 
 # Parsing arguments 
 ifeq ($(firstword $(MAKECMDGOALS)),$(filter $(MAKECMDGOALS),ps debug up start stop restart))
