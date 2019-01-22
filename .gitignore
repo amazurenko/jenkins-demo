@@ -1,2 +1,4 @@
 .idea
 .vagrant
+ci-stack/configs/nginx/nginx.conf
+ci-stack/docker-compose.yml
