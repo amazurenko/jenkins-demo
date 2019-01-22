@@ -1,8 +1,17 @@
 version: '3'
 services:
 
+  sonarqube-init:
+    build:
+      dockerfile: sonarqube-init.Dockerfile
+      context: configs/sonar
+    volumes:
+      - sonarqube-extensions:/opt/sonarqube/extensions
+
   sonar:
-    depends_on: ['sonardb']
+    depends_on:
+      - sonarqube-init
+      - sonardb
     environment: 
       - SONARQUBE_JDBC_USERNAME=${SONARQUBE_JDBC_USERNAME}
       - SONARQUBE_JDBC_PASSWORD=${SONARQUBE_JDBC_PASSWORD}
@@ -20,16 +29,15 @@ services:
 
   sonardb:
     environment: 
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${SONARQUBE_JDBC_USERNAME}
-      - MYSQL_PASSWORD=${SONARQUBE_JDBC_PASSWORD}
-    image: ${MYSQL_DOCKER_IMAGE}
+      - POSTGRES_USER=${SONARQUBE_JDBC_USERNAME}
+      - POSTGRES_PASSWORD=${SONARQUBE_JDBC_PASSWORD}
+    image: ${POSTGRES_DOCKER_IMAGE}
     logging: {'driver': 'json-file', 'options': {'tag': 'docker-sonardb'}}
-    ports: ['3306:3306']
     restart: always
     volumes: 
-      - mysql-data:/var/lib/mysql
+      - postgresql:/var/lib/postgresql
+      # This needs explicit mapping due to https://github.com/docker-library/postgres/blob/4e48e3228a30763913ece952c611e5e9b95c8759/Dockerfile.template#L52
+      - postgresql_data:/var/lib/postgresql/data
 
 volumes:
   sonarqube-conf:
@@ -37,4 +45,5 @@ volumes:
   sonarqube-extensions:
   sonarqube-bundled-plugins:
   sonarqube-logs:
-  mysql-data: 
+  postgresql:
+  postgresql_data:
